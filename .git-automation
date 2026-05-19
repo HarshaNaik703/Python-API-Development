@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+files=*
+git init
+read -p "Files to add (give * for all files): " -a files
+if [[ "${files[0]}" == "*" ]]; then
+    git add *
+else
+    git add "${files[@]}"
+fi
+
+read -p "commit message" commit
+git commit -m "$commit"
+
+read -p "give the branch name" branch
+git checkout "$branch"
+if [[ "$(git branch --show-current)" == "$branch" ]]; then
+    git push origin "$branch"
+else
+    echo "you're not in the same branch" >&2
+fi
