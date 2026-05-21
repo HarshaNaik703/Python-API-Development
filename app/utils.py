@@ -8,3 +8,10 @@ def rehashing(password_plain:str, password_hashed:str)->bool:
         password_plain.encode('utf-8'),
         password_hashed.encode('utf-8')
     )
+
+if __name__ == "__main__":
+    str1 = hashing("harsha")
+    str2 = hashing("harsha")
+    print(str1)
+    print(str2)
+    print(str1==str2)

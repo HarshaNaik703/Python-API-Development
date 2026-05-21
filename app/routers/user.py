@@ -30,23 +30,6 @@ def get_users(db: Session = Depends(get_db)):
     users = db.query(User).all()
     return users
 
-
-@router.get("/login", status_code=status.HTTP_200_OK)
-def user_login(user: UserLogin, db: Session = Depends(get_db)):
-    temp_user = db.query(User).filter(User.email == user.email).first()
-    if temp_user is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found"
-        )
-    if rehashing(user.password, temp_user.password):
-        return {"message": "Successfully logged in"}
-    raise HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Password is incorrect"
-    )
-
-
 @router.get("/{id}", status_code=status.HTTP_200_OK, response_model=UserOut)
 def get_users(id: int, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == id).first()

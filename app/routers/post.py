@@ -1,7 +1,7 @@
 from fastapi import status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
 from typing import List
-
+from ..oauth2 import get_current_user
 
 from ..database import get_db
 from ..models import Post
@@ -15,7 +15,8 @@ async def root(db: Session = Depends(get_db)):
     return posts
 
 @router.post("/create_post", status_code=status.HTTP_201_CREATED)
-def create_post(post: CreatePost, db: Session = Depends(get_db)):
+def create_post(post: CreatePost, db: Session = Depends(get_db), user_id : int = Depends(get_current_user)):
+    print(user_id)
     if post is None:
         raise HTTPException(status_code=status.HTTP_204_NO_CONTENT)
     new_post = Post(
@@ -30,7 +31,7 @@ def create_post(post: CreatePost, db: Session = Depends(get_db)):
 
 
 @router.get("/{id}",  status_code=status.HTTP_200_OK, response_model=PostResponse)
-def get_post(id: int, db: Session = Depends(get_db)):
+def get_post(id: int, db: Session = Depends(get_db), user_id: int = Depends(get_current_user)):
     post = db.query(Post).filter(Post.id == id).first()
     if post is None:
         raise HTTPException(
@@ -41,7 +42,7 @@ def get_post(id: int, db: Session = Depends(get_db)):
 
 
 @router.delete("/delete/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_post(id: int, db: Session = Depends(get_db)):
+def delete_post(id: int, db: Session = Depends(get_db), user_id: int = Depends(get_current_user)):
     post = db.query(Post).filter(Post.id == id)
     post.delete(synchronize_session=False)
     db.commit()
@@ -52,7 +53,7 @@ def delete_post(id: int, db: Session = Depends(get_db)):
 
 
 @router.put("/update/{id}", status_code=status.HTTP_205_RESET_CONTENT)
-def update(id: int, post: UpdatePost, db: Session = Depends(get_db)):
+def update(id: int, post: UpdatePost, db: Session = Depends(get_db), user_id: int = Depends(get_current_user)):
 
     post_query = db.query(Post).filter(Post.id == id)
 
