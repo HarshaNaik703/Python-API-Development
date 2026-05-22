@@ -18,5 +18,5 @@ def login(user_credentials :OAuth2PasswordRequestForm = Depends(),db : Session =
             status_code=status.HTTP_403_FORBIDDEN, detail="Invalid Password")
     if not rehashing(user_credentials.password, user.password):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid Password")
-    access_token = create_access_token({"user_id": user.id})
+    access_token = create_access_token({"user_id": user.user_id})
     return {"access_token": access_token, "token_type":"bearer"}

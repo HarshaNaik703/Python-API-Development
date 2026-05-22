@@ -14,17 +14,28 @@ class UpdatePost(BaseModel):
     content: str
 
 class PostResponse(UpdatePost):
+    id : int
     created_at : datetime
+    owner_id : int
+    owner : UserOut
+    class Config:
+        from_attributes = True
+
+
+class UserPostResponse(UpdatePost):
+    id : int
+    created_at: datetime
+
     class Config:
         from_attributes = True
         
 class CreateUser(BaseModel):
-    id : int
+    user_id : int
     email : EmailStr
     password : str
 
 class UserOut(BaseModel):
-    id:int
+    user_id:int
     email:EmailStr
     
     class config:

@@ -6,17 +6,6 @@ app = FastAPI()
 
 Base.metadata.create_all(bind=engine)
 
-# testing
-
-
 app.include_router(post.router)
 app.include_router(user.router)
 app.include_router(auth.router)
-
-# @app.get("/testing")
-# def get(db: Session = Depends(get_db)):
-#     posts = db.query(Post).all()
-#     return posts
-
-
-# title->str and content->str

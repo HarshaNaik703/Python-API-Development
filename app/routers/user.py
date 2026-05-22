@@ -15,7 +15,7 @@ def create_user(user: CreateUser, db: Session = Depends(get_db)):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="details are not enough")
     new_user = User(
-        id=user.id,
+        user_id=user.user_id,
         password=hashing(user.password),
         email=user.email
     )
@@ -32,7 +32,7 @@ def get_users(db: Session = Depends(get_db)):
 
 @router.get("/{id}", status_code=status.HTTP_200_OK, response_model=UserOut)
 def get_users(id: int, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.id == id).first()
+    user = db.query(User).filter(User.user_id == id).first()
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"user not found of id {id}")
