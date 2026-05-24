@@ -6,27 +6,26 @@ from sqlalchemy.orm import Session
 from .schemas import TokenData
 from fastapi.security import OAuth2PasswordBearer
 from .models import User
+from .config import settings
+import os
 oauth2_schema = OAuth2PasswordBearer(tokenUrl='login')
 
-SECRET_KEY = "AIODFA[SFJASJFKDA2DFADF\7737\\adfjaskfjsafasfsf]"
-EXPIRATION_TIME = 10
-ALGORITHM = "HS256"
 
 def create_access_token(data:dict):
     to_encode = data.copy()
     
-    expire = datetime.now() + timedelta(minutes=EXPIRATION_TIME)
+    expire = datetime.now() + timedelta(minutes=settings.EXPIRATION_TIME)
     to_encode.update({"exp":expire})
 
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
     return encoded_jwt
 
 def verify_access_token(token:str, credentials_exception):
     try:
         payload = jwt.decode(
             token,
-            key=SECRET_KEY,
-            algorithms=[ALGORITHM]
+            key=settings.SECRET_KEY,
+            algorithms=[settings.ALGORITHM]
         )
         id:str = payload.get("user_id")
 
@@ -46,5 +45,5 @@ def get_current_user(token: str = Depends(oauth2_schema), db : Session = Depends
     token = verify_access_token(
         token=token, credentials_exception=credentials_exception)
     user = db.query(User).filter( User.user_id == token.id).first()
-    
+
     return user

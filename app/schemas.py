@@ -21,6 +21,9 @@ class PostResponse(UpdatePost):
     class Config:
         from_attributes = True
 
+class IndividualPost(PostResponse):
+    likes : int
+
 
 class UserPostResponse(UpdatePost):
     id : int
@@ -51,3 +54,13 @@ class Token(BaseModel):
     
 class TokenData(BaseModel):
     id : Optional[int] = None
+
+class PasswordReset(BaseModel):
+    newpass : str
+    oldpass : str
+    
+class Password(BaseModel):
+    newpass : str
+    email : Optional[EmailStr] = None
+    user_id : Optional[int] = None
+    
