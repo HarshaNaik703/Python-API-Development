@@ -9,10 +9,9 @@ from ..utils import rehashing
 
 router = APIRouter(tags=["Authintication"])
 
-@router.post('/login', response_model=Token)
+@router.post('/login', response_model=Token, status_code=status.HTTP_202_ACCEPTED)
 def login(user_credentials :OAuth2PasswordRequestForm = Depends(),db : Session = Depends(get_db)):
     user = db.query(User).filter(User.email == user_credentials.username).first()
-    print(user.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail="Invalid Password")

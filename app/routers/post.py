@@ -65,18 +65,18 @@ def get_post(id: int, db: Session = Depends(get_db), user: int = Depends(get_cur
 
 @router.delete("/delete/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_post(id: int, db: Session = Depends(get_db), user: int = Depends(get_current_user)):
-    post = db.query(Post).filter(Post.id == id).first()
-    if post is None:
+    post = db.query(Post).filter(Post.id == id)
+    if post.first() is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Not found")
-    if post.owner_id == user.user_id:
+    if post.first().owner_id == user.user_id:
         post.delete(synchronize_session=False)
         db.commit()
         return
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You are not authorised to delete this post")
 
 
-@router.put("/update/{id}", status_code=status.HTTP_205_RESET_CONTENT)
+@router.put("/update/{id}", status_code=status.HTTP_200_OK)
 def update(id: int, post: UpdatePost, db: Session = Depends(get_db), user: int = Depends(get_current_user)):
 
     post_query = db.query(Post).filter(Post.id == id)
@@ -96,7 +96,6 @@ def update(id: int, post: UpdatePost, db: Session = Depends(get_db), user: int =
         {
             "title": post.title,
             "content": post.content,
-            "rating": post.rating
         }
     )
 

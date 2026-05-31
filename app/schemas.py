@@ -36,7 +36,7 @@ class CreateUser(BaseModel):
     user_id : int
     email : EmailStr
     password : str
-
+    phone_number : str
 class UserOut(BaseModel):
     user_id:int
     email:EmailStr

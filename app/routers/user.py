@@ -17,7 +17,8 @@ def create_user(user: CreateUser, db: Session = Depends(get_db)):
     new_user = User(
         user_id=user.user_id,
         password=hashing(user.password),
-        email=user.email
+        email=user.email,
+        phone_number = user.phone_number
     )
     db.add(new_user)
     db.commit()
@@ -53,7 +54,6 @@ def password_reset(password : PasswordReset,user: int = Depends(get_current_user
         db.commit()
         return {"message": "password updated , login again"}
     else:
-        print(type(user.token))
         print(user.password)
         print(type(user.password))
         print(rehashing(password.oldpass, user.password))
